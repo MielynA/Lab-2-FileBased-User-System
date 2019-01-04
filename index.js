@@ -19,19 +19,11 @@ app.get('/class/add', (req,res)=>{
     if(name === '' || age === '' || subject === '' || grade === '' || city === ''){
         res.json({message: "Please fill out all the information for the student"})
         return;
-     } //else if(name === Number){   // if they enter number 1. this is a string convert it first to num or how will read it 
-    //     res.json({error: 'error'})
-    // }
-//}
-  
+     }
 
 fs.readFile(`./classes/${subject}.json`, 'utf8', (err, data)=>{
 
    if (err) {
-        
-        console.log(err)
-        console.log('pumasok sa if (err) - file DOES NOT exist -- first time')
-
         const student = {
             students: [{
                 "name"  : query.name,
@@ -39,84 +31,25 @@ fs.readFile(`./classes/${subject}.json`, 'utf8', (err, data)=>{
                 "city"  : query.city,
                 "grade" : query.grade
             }]
-        }
-       
-        console.log(student)
-        
-        //first record in the file
-        //first time to create the file
-        //   const student = {
-        //     students: [{
-        //         name,
-        //         age,
-        //         city,
-        //         grade
-        //     }]
-        // }
-
-        // student = name: req.query.name,
-                  
-
-        console.log('write to file')
-        fs.writeFile(`./classes/${subject}.json`, JSON.stringify(student), err => {});
-        
+        }     
+        console.log("line36",student)
+        fs.writeFile(`./classes/${subject}.json`, JSON.stringify(student), err => {});     
         } 
     else 
         {
-        console.log('pumasok sa else - ')
-        
-        console.log(data)
-       
-       
         let newStud = true
 
         if (data){
-            //kung may laman
-            console.log('may laman file')
-
             let addedStud = JSON.parse(data)            
-            console.log("list of stude", addedStud)
-
-            
-
-            console.log("how many addedStud", addedStud.students.length)
             for(let i = 0; i < addedStud.students.length; i++){
-
-                console.log(addedStud.students[i].name)
                 if(addedStud.students[i].name === req.query.name){
-                    
-                    console.log("found!")
-                    newStud = false
-                   
-                    // found exit loop
-                    // return message already exist?
-                    
+                    newStud = false     
                     break;
-                }
-                
+                } 
             }
-
-            console.log('labas ng for loop')
-
-
-            //res.json(JSON.stringify("test"))
-
-            //if the student exists dont add it to the file
-            // for(let i = 0; i < addedStud.students.length; i++){
-            //     console.log("line 37", addedStud.students[i])
-            //     if(addedStud.students[i].name === name ){
-            //         addedStud.students.splice(i, 1, {
-            //             name, age, city, grade
-            //         })
-            //         newStud = false;
-            //     }
-            // }
-        
-            // if the newStudent does not exist yet.. push it to the file
             if(newStud){
                 addedStud.students.push({name,age,city,grade})                
             }
-            
             fs.writeFile(`./classes/${subject}.json`, JSON.stringify(addedStud), err => {});
         }
     }   
@@ -126,16 +59,13 @@ fs.readFile(`./classes/${subject}.json`, 'utf8', (err, data)=>{
                    class: query.class})
 });
 
-
-
 app.get('/class/list', (req, res)=>{
     const subject = req.query.class; 
     fs.readFile(`./classes/${subject}.json`, 'utf8',(err,data)=>{
         if(err){
             res.json({error: `Class ${subject} does not exist`})
         } else {
-            res.json(JSON.parse(data))
-        
+            res.json(JSON.parse(data))    
         }
     });
 });
