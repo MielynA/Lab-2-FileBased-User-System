@@ -94,10 +94,26 @@ app.get('/class/listfailing', (req, res)=>{
       }
    });
 });
-app.get('./classes/listfromcity', (req, res)=>{
+app.get('/class/listfromcity', (req, res)=>{
     const subject = req.query.class;
     const city = req.query.city; 
-    
+    fs.readFile(`./classes/${subject}.json`, 'utf8', (err,data)=>{
+        if(err){
+            res.json({error: `Class ${subject} does not exist`})
+        } else {
+            let studCity = JSON.parse(data)
+            console.log('line 105',studCity)
+            let newCity = []
+            for(let i=0; i < studCity.students.length; i++){
+                console.log(studCity.students[i].city)
+                if(studCity.students[i].city.toLowerCase() === city.toLowerCase()){
+                newCity.push(studCity.students[i])
+
+                }
+            }
+            res.json({city: newCity})
+        }
+    });
 });
 
 app.listen(process.env.port || 3000)
