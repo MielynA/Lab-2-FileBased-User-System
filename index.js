@@ -14,15 +14,15 @@ app.get('/class/add', (req,res)=>{
  let subject = req.query.class;
  let grade = req.query.grade;
  let city = req.query.city;
-for(let i =0; i < query.length; i++){
-    console.log('line 18',name.length[i])
+//for(let i =0; i < query.length; i++){
+   
     if(name === "" || age === "" || subject === "" || grade === "" || city === ""){
         res.json({message: "Please fill out all the information for the student"})
         return;
-    } else if(name === undefined){
-        res.json({error: 'error'})
-    }
-}
+     } //else if(name === Number){   // if they enter number 1. this is a string convert it first to num or how will read it 
+    //     res.json({error: 'error'})
+    // }
+//}
 
 fs.readFile(`./classes/${subject}.json`, 'utf8', (err, data)=>{
    if (err) {
@@ -64,7 +64,7 @@ fs.readFile(`./classes/${subject}.json`, 'utf8', (err, data)=>{
 });
 
 app.get('/class/list', (req, res)=>{
-    let subject = req.query.class; 
+    const subject = req.query.class; 
     fs.readFile(`./classes/${subject}.json`, 'utf8',(err,data)=>{
         if(err){
             res.json({error: `Class ${subject} does not exist`})
@@ -75,8 +75,30 @@ app.get('/class/list', (req, res)=>{
     });
 });
 
-
-
+app.get('/class/listfailing', (req, res)=>{
+   const subject = req.query.class; 
+   fs.readFile(`./classes/${subject}.json`, 'utf8', (err, data)=>{
+      if(err){
+          res.json({error: `Class ${subject} does not exist`})
+      } else {
+          let studData = JSON.parse(data)
+          console.log('line 85',studData)
+          let newArr = [];
+          for(let i = 0; i < studData.students.length; i++){
+              console.log(studData.students[i].grade)
+              if(studData.students[i].grade <= 50){
+                  newArr.push(studData.students[i])
+              }
+          } 
+          res.json({students: newArr})
+      }
+   });
+});
+app.get('./classes/listfromcity', (req, res)=>{
+    const subject = req.query.class;
+    const city = req.query.city; 
+    
+});
 
 app.listen(process.env.port || 3000)
 console.log("listening");
