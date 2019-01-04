@@ -14,10 +14,17 @@ app.get('/class/add', (req,res)=>{
  let subject = req.query.class;
  let grade = req.query.grade;
  let city = req.query.city;
-
+for(let i =0; i < query.length; i++){
+    console.log('line 18',name.length[i])
+    if(name === "" || age === "" || subject === "" || grade === "" || city === ""){
+        res.json({message: "Please fill out all the information for the student"})
+        return;
+    } else if(name === undefined){
+        res.json({error: 'error'})
+    }
+}
 
 fs.readFile(`./classes/${subject}.json`, 'utf8', (err, data)=>{
-    console.log(data)
    if (err) {
     const student = {
         students: [{
@@ -67,6 +74,8 @@ app.get('/class/list', (req, res)=>{
         }
     });
 });
+
+
 
 
 app.listen(process.env.port || 3000)
