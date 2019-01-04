@@ -28,15 +28,28 @@ fs.readFile(`./classes/${subject}.json`, 'utf8', (err, data)=>{
         }]
     }
     fs.writeFile(`./classes/${subject}.json`, JSON.stringify(student), err => {});
+    console.log(student)
  } else {
-     let newStud = JSON.parse(data)
-     console.log("list of stude", newStud)
-     for(let i = 0; i < newStud.students.length; i++){
-         console.log(newStud.students[i])
-         //newStud.students
+     let addedStud = JSON.parse(data)
+     console.log("list of stude", addedStud)
+     let newStud = true
+     //if the student exists dont add it to the file
+     for(let i = 0; i < addedStud.students.length; i++){
+         console.log("line 37", addedStud.students[i])
+         if(addedStud.students[i].name === name ){
+             addedStud.students.splice(i, 1, {
+                 name, age, city, grade
+             })
+            newStud = false;
+        }
      }
-
+      // if the newStudent does not exist yet.. push it to the file
+     if(newStud){
+       addedStud.students.push({name,age,city,grade})
+     }
+     fs.writeFile(`./classes/${subject}.json`, JSON.stringify(addedStud), err => {});
  }
+   
 });
 
   res.json({added: {name: query.name, age: query.age, subject: query.class, grade: query.grade, city: query.city},
